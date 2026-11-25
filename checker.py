@@ -199,7 +199,6 @@ async def _run_checker(cfg: RunConfig, settings: AppSettings) -> None:
 
     # Worker
     async def _worker(worker_id: int) -> None:
-        nonlocal _next_idx
         while True:
             t = await _next_task()
             if t is None:
@@ -226,7 +225,7 @@ async def _run_checker(cfg: RunConfig, settings: AppSettings) -> None:
                 elif result == "EXHAUSTED":
                     request_log.append(f"[{C.WARNING}]![/] proxies exhausted")
                     # Put the name back — it wasn't checked
-                    async with _idx_lock:
+                    async with _task_lock:
                         _next_idx -= 1
                     await asyncio.sleep(1.0)
 
